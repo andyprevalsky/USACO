@@ -86,8 +86,6 @@ class Solution {
                 ySortCpy.pop_front();
                 bottomBound = ySortCpy.front();
             }
-            //cout << "LeftBound: " << leftBound[0] << " RightBound: " << rightBound[0] << " TopBound: " << topBound[1] << " BottomBound: " << bottomBound[1] << endl;
-            //cout << (rightBound[0]-leftBound[0]) * (topBound[1]-bottomBound[1]) <<  endl;
             long long int area = (rightBound[0]-leftBound[0]) * (topBound[1]-bottomBound[1]);
             if (area < bestArea) bestArea = area;
         };
@@ -113,7 +111,6 @@ class Solution {
                 for (int j = 0; j < moves.size(); j++) { 
                     for (int k = 0; k < moves.size(); k++) {
                         string s = "";
-                        //cout << s+moves[i]+moves[j]+moves[k] << endl;
                         getArea(s + moves[i] + moves[j] + moves[k]);
                     }
                 }
