@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <unordered_set>
 using namespace std;
 
 class Solution {
@@ -13,8 +14,20 @@ class Solution {
         int leftBound = 0;
         int topBound = 0;
         int bottomBound = 0;
+        int islands = 0;
+        struct VectorHash {
+            size_t operator()(const std::vector<int>& v) const {
+                std::hash<int> hasher;
+                size_t seed = 0;
+                for (int i : v) {
+                    seed ^= hasher(i) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+                }
+                return seed;
+            }
+        };
         vector<char> moves;
         vector<vector<vector<int> > > grid;
+        unordered_set<vector<int>, VectorHash> memo;
     public:
         void readIn() {
             ifstream fin ("gates.in");
@@ -32,55 +45,61 @@ class Solution {
                 if (y < bottomBound) bottomBound = y;
                 moves.push_back(c);
             }
-
-            cout << rightBound << " " << leftBound << " " << bottomBound << " " << topBound << endl;
-            for (int j = bottomBound-2; j <= topBound+1; j++) {
+            for (int j = bottomBound-2; j <= topBound; j++) {
                 vector<vector<int> > row;
-                for (int i = leftBound-2; i <= rightBound+1; i++) {
+                for (int i = leftBound-2; i <= rightBound; i++) {
                     row.push_back({0, 0, 0, 0});
                 }
                 grid.push_back(row);
             }
 
-            int xPos = -leftBound+2;
-            int yPos = -bottomBound+2;
+            int xPos = -leftBound+1;
+            int yPos = topBound+1;
             int count = 0;
             for (auto i: moves) {
-                // first pos fence to the left, second pos fence to the right, third pos fence above, fourth pos fence below
                 if (i == 'N') {
                     grid[yPos][xPos-1][1] = 1; 
                     grid[yPos][xPos][0] = 1;
-                    yPos++;
+                    yPos--;
                 } else if (i == 'S') {
+                    yPos++;
                     grid[yPos][xPos-1][1] = 1; 
                     grid[yPos][xPos][0] = 1;    
-                    yPos--;
                 } else if (i == 'W') {
-                    grid[yPos-1][xPos][2] = 1; 
-                    grid[yPos][xPos][3] = 1;   
-                    xPos--;              
-                } else if (i == 'E') {
-                    grid[yPos-1][xPos][2] = 1; 
+                    xPos--; 
+                    grid[yPos+1][xPos][2] = 1; 
+                    grid[yPos][xPos][3] = 1;                
+                } else if (i == 'E') {    
+                    grid[yPos+1][xPos][2] = 1; 
                     grid[yPos][xPos][3] = 1;     
                     xPos++;
                 }
-                if (count == 3) break;
                 count++;
             }
-            for (int i = 0; i < grid.size(); i++) {
-                for (int j = 0; j < grid[i].size(); j++) {
-                    for (auto k: grid[i][j]) {
-                        cout << k << " ";
-                    }
-                    cout << " * ";
-                }
-                cout << endl;
-            }
+        }
+
+        void dfs(int row, int col) {
+            if (row < 0 || col < 0 || row >= grid.size() || col >= grid[0].size()) return;
+            if (memo.find({row, col}) != memo.end()) return;
+            memo.insert({row, col});
+            if (grid[row][col][0] != 1) dfs(row, col-1);
+            if (grid[row][col][1] != 1) dfs(row, col+1);
+            if (grid[row][col][3] != 1) dfs(row+1, col);
+            if (grid[row][col][2] != 1) dfs(row-1, col);
         }
 
         void main() {
             readIn();
             ofstream fout ("gates.out");
+            for (int row = 0; row < grid.size(); row++) {
+                for (int col = 0; col < grid[row].size(); col++) {
+                    if (memo.find({row, col}) == memo.end()) {
+                        dfs(row, col);
+                        islands++;
+                    }
+                }
+            }
+            fout << islands-1 << endl;
         }
 };
 
