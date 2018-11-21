@@ -23,34 +23,17 @@ class Solution {
             sort(jewels.begin(), jewels.end());
         }
 
-        void contInterval() {
-            int i = 0;
-            int count = 0;
-            deque<int> cases;
-            while (jewels[i] <= 2*K && i != jewels.size()) {
-                cases.push_back(jewels[i]);
-                count++;
-                i++;
-            }
-            if (count > best) best = count;
-            for (;i < jewels.size(); i++) {
-                while (!cases.empty() && jewels[i] - cases.front() > 2*K) {
-                    cases.pop_front();
-                    count--;
-                }
-                cases.push_back(jewels[i]);
-                count++;
-                if (count > best) best = count;
-            }
-        }
+        void main() {
+            readIn();
+            ofstream fout ("diamond.out");
 
-        void distInterval() { 
             int i = 0;
             int count = 0;
             int best1 = 0;
             int count2 = 0;
             deque<int> cases;
             bests.push_back(0);
+            
             for (;i < jewels.size(); i++) {
                 while (!cases.empty() && jewels[i] - cases.front() > K) {
                     cases.pop_front();
@@ -61,6 +44,7 @@ class Solution {
                 if (count > best1) best1 = count;
                 bests.push_back(best1);
             }
+
             deque<int> cases2;
             i = jewels.size()-1;
             count = 0;
@@ -71,17 +55,10 @@ class Solution {
                 }
                 cases2.push_back(jewels[i]);
                 count++;
-                cout << count << " " << bests[i] << endl; 
                 if (i == jewels.size()-1) continue;
                 if (count + bests[i] > best) best = count + bests[i+1];
             }
-        }
 
-        void main() {
-            readIn();
-            ofstream fout ("diamond.out");
-            contInterval();
-            distInterval();
             fout << best;
         }
 };
