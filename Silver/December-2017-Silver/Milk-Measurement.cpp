@@ -42,8 +42,6 @@ class Solution {
                 cowPerProduction[cows[id]]++; //increment cow production at said level
                 currMax = cowPerProduction.begin()->first;
 
-
-                //cout << cowPerProduction.begin()->first << " " << cowPerProduction.begin()->second << " " << pMax << " " << pNum << endl;
                 if (currMax > pMax && (pNum != 1 || cows[id]-change != pMax)) {
                     res++;
                 } else if (currMax < pMax && (cows[id] != currMax || cowPerProduction.begin()->second != 1)) {
