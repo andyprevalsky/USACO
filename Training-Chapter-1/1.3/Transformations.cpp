@@ -19,32 +19,18 @@ class Solution {
     public:
         vector<vector<char>> rotate90(vector<vector<char>>& input) {
             vector<vector<char>> out = input;
-            // for (auto i: out) {
-            //     for (auto j: i) {
-            //         cout << j << " ";
-            //     }
-            //     cout << endl;
-            // }
-            // cout << " ------------- " << endl;
             for (int i = 0; i < out[0].size()/2; i++) {
                 int startRow = i;
                 int endRow = out[0].size()-i-1;
                 for (int j = i; j < endRow; j++) {
                     char temp = out[startRow][j];                    
-                    out[startRow][j] = out[endRow-j][startRow];
-                    out[endRow-j][startRow] = out[endRow][endRow-j];
-                    out[endRow][endRow-j] = out[startRow+j][endRow];
-                    out[startRow+j][endRow] = temp;
+                    out[startRow][j] = out[out[0].size()-1-j][startRow];
+                    out[out[0].size()-1-j][startRow] = out[endRow][out[0].size()-1-j];
+                    out[endRow][out[0].size()-1-j] = out[j][endRow];
+                    out[j][endRow] = temp;
 
                 }
             }
-
-            // for (auto i: out) {
-            //     for (auto j: i) {
-            //         cout << j << " ";
-            //     }
-            //     cout << endl;
-            // }
             return out;
         }
 
@@ -86,22 +72,7 @@ class Solution {
                 }
             }
 
-            // for (auto i: input) {
-            //      for (auto j: i) {
-            //          cout << j << " ";
-            //      }
-            //      cout << endl;
-            // }
-            // cout << " ------------- " << endl;
-
             vector<vector<char>> out = reflection(input);
-
-            // for (auto i: out) {
-            //      for (auto j: i) {
-            //          cout << j << " ";
-            //      }
-            //      cout << endl;
-            // }
             vector<vector<char>> r1 = rotate90(input);
             vector<vector<char>> r2 = rotate90(r1);
             vector<vector<char>> r3 = rotate90(r2);
