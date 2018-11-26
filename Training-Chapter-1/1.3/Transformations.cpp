@@ -1,4 +1,12 @@
+/*
+    ID: andypre1
+    LANG: C++11
+    PROB: transform
+*/
+
+
 #include <fstream>
+#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -9,6 +17,58 @@ class Solution {
         vector<vector<char> > input;
         vector<vector<char> > output;
     public:
+        vector<vector<char>> rotate90(vector<vector<char>>& input) {
+            vector<vector<char>> out = input;
+            // for (auto i: out) {
+            //     for (auto j: i) {
+            //         cout << j << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << " ------------- " << endl;
+            for (int i = 0; i < out[0].size()/2; i++) {
+                int startRow = i;
+                int endRow = out[0].size()-i-1;
+                for (int j = i; j < endRow; j++) {
+                    char temp = out[startRow][j];                    
+                    out[startRow][j] = out[endRow-j][startRow];
+                    out[endRow-j][startRow] = out[endRow][endRow-j];
+                    out[endRow][endRow-j] = out[startRow+j][endRow];
+                    out[startRow+j][endRow] = temp;
+
+                }
+            }
+
+            // for (auto i: out) {
+            //     for (auto j: i) {
+            //         cout << j << " ";
+            //     }
+            //     cout << endl;
+            // }
+            return out;
+        }
+
+        vector<vector<char>> reflection(vector<vector<char>>& input) {
+            vector<vector<char>> out = input;
+            for (int i = 0; i < out.size(); i++) {
+                for (int j = 0; j < out[0].size()/2; j++) {
+                    char temp = out[i][j];
+                    out[i][j] = out[i][out[0].size()-1-j];
+                    out[i][out[0].size()-1-j] = temp;
+                }
+            }
+            return out;
+        }
+
+        bool isSame(vector<vector<char>>& c1, vector<vector<char>>& c2) {
+            for (int i = 0; i < c1.size(); i++) {
+                for (int j = 0; j < c1[0].size(); j++) {
+                    if (c1[i][j] != c2[i][j]) return false;
+                }
+            }
+            return true;
+        }
+
         void main() {
             ifstream fin ("transform.in");
             ofstream fout ("transform.out");
@@ -26,7 +86,41 @@ class Solution {
                 }
             }
 
-            fout << res;
+            // for (auto i: input) {
+            //      for (auto j: i) {
+            //          cout << j << " ";
+            //      }
+            //      cout << endl;
+            // }
+            // cout << " ------------- " << endl;
+
+            vector<vector<char>> out = reflection(input);
+
+            // for (auto i: out) {
+            //      for (auto j: i) {
+            //          cout << j << " ";
+            //      }
+            //      cout << endl;
+            // }
+            vector<vector<char>> r1 = rotate90(input);
+            vector<vector<char>> r2 = rotate90(r1);
+            vector<vector<char>> r3 = rotate90(r2);
+            vector<vector<char>> ref = reflection(input);
+            vector<vector<char>> rr1 = rotate90(ref);
+            vector<vector<char>> rr2 = rotate90(rr1);
+            vector<vector<char>> rr3 = rotate90(rr2);
+
+            if (isSame(output, r1)) fout << 1 << endl;
+            else if (isSame(output, r2)) fout << 2 << endl;
+            else if (isSame(output, r3)) fout << 3 << endl;
+            else if (isSame(output, ref)) fout << 4 << endl;
+            else if (isSame(output, rr1)) fout << 5 << endl;
+            else if (isSame(output, rr2)) fout << 5 << endl;
+            else if (isSame(output, rr3)) fout << 5 << endl;
+            else if (isSame(output, input)) fout << 6 << endl;
+            else fout << 7 << endl;
+            return;
+
         }
 };
 
