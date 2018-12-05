@@ -121,7 +121,7 @@ int main() {
     for (int i = 0; i < 1000; i++) {
         Solution s;
         long long a = s.main();
-        if (a > 0 && a < min) min = a;
+        if (a < min) min = a;
     }
     fout << min << endl;
 }
