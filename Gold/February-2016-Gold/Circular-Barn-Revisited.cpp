@@ -117,10 +117,10 @@ class Solution {
 int main() {
     ofstream fout ("cbarn2.out");
     srand(time(NULL));
-    long long  min = 0x3FFFFFFFFFFFFFFFLL;
+    int  min = 2000000000;
     for (int i = 0; i < 1000; i++) {
         Solution s;
-        long long a = s.main();
+        int a = s.main();
         if (a < min) min = a;
     }
     fout << min << endl;
