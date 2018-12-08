@@ -62,7 +62,6 @@ class Solution {
                 for (auto i: edges[house]) {
                     Union(house, i);
                 }
-                if (numEdges >= count) exit(1);
                 if (numEdges == count-1) res.push_back("YES");
                 else res.push_back("NO");
             }
