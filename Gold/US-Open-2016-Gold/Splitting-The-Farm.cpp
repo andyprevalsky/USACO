@@ -12,6 +12,7 @@ class Solution {
         vector<pair<int, int>> points;
         long long twoMin = INF;
         long long oneFence;
+
     public:
         void prepData() {
             ifstream fin ("split.in");
@@ -66,8 +67,6 @@ class Solution {
             }  
         }
 
-
-
         void main() {
             prepData();
             ofstream fout ("split.out");
@@ -78,7 +77,6 @@ class Solution {
             }
 
             sort(points.begin(), points.end());
-
             twoFence();
 
             fout << oneFence - twoMin << endl;
