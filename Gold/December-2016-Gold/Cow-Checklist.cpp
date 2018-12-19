@@ -44,8 +44,6 @@ class Solution {
             if (memo[a][b][s] != -1) return memo[a][b][s];
             if (s == 0) memo[a][b][s] = min((dist(H[a], H[a-1]) + DTW(a-1, b, 0)), (dist(H[a], G[b]) + DTW(a-1, b, 1)));
             else memo[a][b][s] = min((dist(G[b], H[a]) + DTW(a, b-1, 0)), (dist(G[b], G[b-1]) + DTW(a, b-1, 1)));
-            //cout << a << " " << b  << " " << s << " " << " " << H[a].first << " " << H[a-1].first << " " << memo[a][b][s] << endl;
-            //cout << DTW(a-1, b, 1) << " " << dist(H[a], G[b]) << " " << DTW(a-1, b, 1) + dist(H[a], G[b]) << endl;
             return memo[a][b][s];
         }
 
