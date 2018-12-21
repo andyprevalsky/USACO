@@ -36,7 +36,7 @@ class Solution {
             int res = child;
             while (p[res] != res) res = p[res];
             int parent = p[child];
-            while (parent != res) p[child] = res; child = parent; parent = p[parent];
+            while (child != res)  { p[child] = res; child = parent; parent = p[parent]; }
             return res;
         }
 
