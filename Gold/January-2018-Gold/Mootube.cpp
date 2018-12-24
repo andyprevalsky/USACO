@@ -69,14 +69,11 @@ class Solution {
                     else pHolder.push_back({i[0], i[1]});
                 }
                 pEdges[pa] = pHolder;
-
-                //cout << pSize[pa]-1 << endl;
                 ans.push_back({questions[i][2], pSize[pa]-1});
             }   
 
             sort(ans.begin(), ans.end());
             for (auto i: ans) {
-              //  cout << i[1] << endl;
                 fout << i[1] << endl;
             }
         }
