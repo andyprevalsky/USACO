@@ -1,68 +1,79 @@
-#include <functional>
 #include <iostream>
-#include <algorithm>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
+#include <set>
+#include <algorithm>
+#include <functional>
 using namespace std;
 
 class Solution {
     private:
         int N, B;
-        vector<vector<int>> boots; // each boot is depth size per boot then step size per boot
         vector<int> field;
-        int next[100000];
-        int widths[100000];
+        vector<vector<int>> boots;
+        vector<pair<int, int>> ans;
+        int memo[100000] = {};
+        unordered_map<int, int> depthWidth;
     public:
         void prepData() {
             ifstream fin ("snowboots.in");
             fin >> N >> B; int a, b;
-            for (int i = 0; i < N; i++) {
-                fin >> a; field.push_back(a);
-            }
-            for (int i = 0; i < B; i++) {
-                fin >> a >> b; boots.push_back({a, b, i});
-            }
+            for (int i = 0; i < N; i++) { fin >> a; field.push_back(a); }
+            for (int i = 0; i < B; i++) { fin >> a >> b; boots.push_back({a, b, i}); }
             sort(boots.begin(), boots.end(), greater<vector<int>>());
-
-            for (int i = 0; i < N; i++) next[i] = i+1;
-
-            for (int i = 0; i < 100000; i++) widths[i] = 1;
+            return;
         }
 
-        void combine(int a, int b) {
-            widths[a] += widths[b];
-            next[a] = next[b];
+        int largestInterval(int min) {
+            if (depthWidth.find(min) != depthWidth.end()) return depthWidth[min];
+            int res = 0; int tRes = 0;
+            for (auto& i: field) {
+                if (i > min) tRes += 1;
+                else tRes = 0;
+                res = max(res, tRes);
+            }
+            depthWidth[min] = res;
+            return res;
         }
         
+        void divide(int topBound, int bottomBound, int tp, int fp, int bp) {
+            if (memo[bp] == 1) return;
+            memo[bp] = 1; 
+            vector<int> boot = boots[bp];
+            if (topBound >= boot[1]) ans.push_back(make_pair(boot[2], 0));
+            else if (bottomBound < boot[1]) ans.push_back(make_pair(boot[2], 1));
+            else {
+                int width = largestInterval(boot[0]);
+                if (width >= boot[1]) ans.push_back(make_pair(boot[2], 0));
+                else ans.push_back(make_pair(boot[2], 1));
+                divide(topBound, width, tp, bp, (tp+bp)/2);
+                divide(width, bottomBound, bp, fp, (fp+bp+1)/2);
+                return;
+            }
+            divide(topBound, bottomBound, tp, bp, (tp+bp)/2);
+            divide(topBound, bottomBound, bp, fp, (fp+bp+1)/2);
+
+
+        }
+
         void main() {
             prepData();
             ofstream fout ("snowboots.out");
-            
-            vector<pair<int, int>> ans;
-            for (auto& i: boots) {
-                int j = 1; int lWidth = 0; int mxWidth = 0; int prevJ = 0;
-                // cout << " --------- " <<endl;
-                while (j != N) {
-                    // cout << prevJ << " " << j << endl;
-                    if (field[prevJ] > i[0]) { 
-                        if (field[j] > i[0]) { combine(prevJ, j); lWidth = widths[prevJ]; }
-                        else { lWidth = widths[prevJ]; prevJ = j; }
-                    }
-                    else prevJ = j;
-                    if (lWidth > mxWidth) mxWidth = lWidth;
-                    j = next[j]; 
+
+            divide(0, 2000000000, 0, boots.size()-1, boots.size()/2);
+            for (int i = 0; i < boots.size(); i++) {
+                if (memo[i] != 1) {
+                    cout << i << endl;
+                    int m = largestInterval(boots[i][0]);
+                    if (m >= boots[i][1]) ans.push_back(make_pair(boots[i][2], 0));
+                    else ans.push_back(make_pair(boots[i][2], 1));
                 }
-                // for (int z = 0; z < N; z++) cout << widths[z] << " ";
-                // cout << endl;
-                // cout << i[0] << " " << i[1] << " " << mxWidth << endl;
-                if (mxWidth >= i[1]) ans.push_back(make_pair(i[2], 0));
-                else ans.push_back(make_pair(i[2], 1));
             }
-
             sort(ans.begin(), ans.end());
+            for (auto& i: ans) fout << i.second << endl;
 
-            for (auto& i: ans) cout << i.second << endl;
-
+            return;
         }
 };
 
