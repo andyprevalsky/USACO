@@ -2,28 +2,49 @@
 #include <iostream>
 using namespace std;
 
+#define MOD 1000000007
+
 class Solution {
     private:
-        int N, M, K;
+        long long N, M, K;
+        long long res = 0;
+        long long maxCombo = 1;
+        int dp[1000001];
     public:
         void prepData() {
             ifstream fin ("spainting.in");
             fin >> N >> M >> K;
+            for (int i = 0; i < N; i++) {
+                maxCombo *= M;
+                maxCombo %= MOD;
+            }
         }
 
         void main() {
             prepData();
             ofstream fout ("spainting.out");
-            int lStamp = N-K+1;
-            int numLeft = N-K;
-            int ans = lStamp*K*numLeft*K;
-
-            cout << ans << endl;
-            for (int i = 1; i <= N-K; i++) {
-                ans -= K * (i*(i+1))/2;
+            dp[0] = M;
+            long long numCombinations = 1;
+            for (int k = 1; k < K; k++) {
+                numCombinations *= M;
+                numCombinations %= MOD;
+                dp[k] = numCombinations;
             }
-
-            fout << ans;
+            numCombinations *= M;
+            numCombinations %= MOD;
+            numCombinations -= M;
+            numCombinations += MOD;
+            numCombinations %= MOD;
+            dp[K] = numCombinations;
+            for (int i = K+1; i <= N; i++) {
+                numCombinations *= M;
+                numCombinations %= MOD;
+                numCombinations -= (dp[i-K]*(M-1))%MOD;
+                numCombinations += MOD;
+                numCombinations %= MOD;
+                dp[i] = numCombinations;
+            }
+            fout << (maxCombo - dp[N] + MOD)%MOD;
 
         }
 };
