@@ -45,13 +45,10 @@ class Solution {
                 dists.erase(dists.begin());
                 if (seen.find(n) != seen.end()) continue;
                 seen.insert(n);
-
                 int cameFrom = ne[1].front();
-                //cout << cameFrom << " " << n << endl;
                 reEdges[cameFrom].push_back(n);
                 vector<int> sub; sub.push_back(n);
                 for (auto& i: ne[1]) sub.push_back(i);
-                //vector<int> sub = ne[1]; sub.push_back(n);
                 for (auto& e: edges[n]) {
                     if (weights[e.first] >= weights[n] + e.second) {
                         weights[e.first] = weights[n] + e.second;
@@ -66,7 +63,6 @@ class Solution {
             memo[curr] = 1;
             int total = numCows[curr-1];
             for (auto& i: reEdges[curr]) {
-                //cout << curr << " " << i << endl;
                 total += dfs(i);
             }
             cp[curr] = total;
@@ -78,13 +74,11 @@ class Solution {
             ofstream fout ("shortcut.out");
 
             dijkstra();
-            // for (int i = 0; i < N; i++) cout << reEdges[i].first << " " << reEdges[i].second << endl;
             for (int i = 1; i <= N; i++) {
                 dfs(i);
             }
 
             for (int i = 1; i<= N; i++) {
-                cout << cp[i] << " " << i << endl;
                 res = max(res, weights[i]*cp[i] - cp[i]*T);
             }
             cout << res << endl;
